@@ -1,26 +1,27 @@
-// src/App.js
+// src/App.js (projeto candidate-form)
 import React, { useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Adicionado Firebase Storage
 import './App.css';
 
 // Configuração do Firebase (substitua pelos valores do seu projeto)
 const firebaseConfig = {
-  apiKey: "AIzaSyCcDdI1fLtQBZpQWwCRCJQZNmgwuu31vWw",
-  authDomain: "system-management-1ee11.firebaseapp.com",
-  projectId: "system-management-1ee11",
-  storageBucket: "system-management-1ee11.firebasestorage.app",
-  messagingSenderId: "768745399615",
-  appId: "1:768745399615:web:de9e37843a593867d49f8a",
-  measurementId: "G-DF9CM8C6BM"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
 
 // Inicializar o Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app); // Inicializar o Storage
 
 function App() {
-  console.log('CandidateFormExternal is rendering'); // Log para depuração
+  console.log('CandidateFormExternal is rendering');
 
   const [formData, setFormData] = useState({
     photo: null,
@@ -84,11 +85,21 @@ function App() {
 
     setIsSubmitting(true);
     try {
+      // Fazer upload do CV para o Firebase Storage
+      let cvUrl = null;
+      if (formData.cv) {
+        const cvFile = formData.cv;
+        const cvRef = ref(storage, `candidates/cvs/${cvFile.name}_${Date.now()}`); // Nome único para evitar conflitos
+        await uploadBytes(cvRef, cvFile);
+        cvUrl = await getDownloadURL(cvRef);
+      }
+
       const candidateData = {
         ...formData,
         status: 'Candidates',
         registrationDate: new Date().toISOString(),
-        cv: formData.cv ? formData.cv.name : null // Armazena apenas o nome do arquivo (simulação, idealmente seria um URL de upload)
+        cv: cvUrl, // Salvar a URL do arquivo no Firestore
+        photo: formData.photo // A URL temporária (não estamos salvando a foto no Storage por enquanto)
       };
       await addDoc(collection(db, 'candidates'), candidateData);
       setSuccessMessage('Formulário enviado com sucesso! Entraremos em contato em breve.');
@@ -511,7 +522,7 @@ function App() {
                 </a>
               </label>
               <p className="disc-comment">
-                Clique no botão Fazer o teste para preencher corretamente o seu perfil DISC.
+                Clique no botão ao lado para fazer o seu teste.
               </p>
               <select
                 name="discProfile"
