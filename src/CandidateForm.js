@@ -1,5 +1,5 @@
 // src/CandidateForm.js (projeto candidate-form)
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -7,13 +7,13 @@ import './App.css';
 
 // Configuração do Firebase (substitua pelos valores do seu projeto)
 const firebaseConfig = {
-    apiKey: "AIzaSyCcDdI1fLtQBZpQWwCRCJQZNmgwuu31vWw",
-    authDomain: "system-management-1ee11.firebaseapp.com",
-    projectId: "system-management-1ee11",
-    storageBucket: "system-management-1ee11.firebasestorage.app",
-    messagingSenderId: "768745399615",
-    appId: "1:768745399615:web:de9e37843a593867d49f8a",
-    measurementId: "G-DF9CM8C6BM"
+  apiKey: "AIzaSyCcDdI1fLtQBZpQWwCRCJQZNmgwuu31vWw",
+  authDomain: "system-management-1ee11.firebaseapp.com",
+  projectId: "system-management-1ee11",
+  storageBucket: "system-management-1ee11.firebasestorage.app",
+  messagingSenderId: "768745399615",
+  appId: "1:768745399615:web:de9e37843a593867d49f8a",
+  measurementId: "G-DF9CM8C6BM"
 };
 
 // Inicializar o Firebase
@@ -22,8 +22,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 function CandidateForm() {
-  console.log('CandidateFormExternal is rendering');
-
   const [formData, setFormData] = useState({
     photo: null,
     fullName: '',
@@ -60,19 +58,6 @@ function CandidateForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-
-  // Adicionar useEffect para depurar renderizações
-  useEffect(() => {
-    console.log('formData changed:', formData);
-  }, [formData]);
-
-  useEffect(() => {
-    console.log('isSubmitting changed:', isSubmitting);
-  }, [isSubmitting]);
-
-  useEffect(() => {
-    console.log('successMessage changed:', successMessage);
-  }, [successMessage]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -138,7 +123,6 @@ function CandidateForm() {
     setIsSubmitting(true);
     try {
       console.log('Starting CV upload...');
-      // Fazer upload do CV para o Firebase Storage
       let cvUrl = null;
       if (formData.cv) {
         const cvFile = formData.cv;
@@ -154,8 +138,8 @@ function CandidateForm() {
         ...formData,
         status: 'Candidates',
         registrationDate: new Date().toISOString(),
-        cv: cvUrl, // Salvar a URL do arquivo no Firestore
-        photo: formData.photo // A URL temporária (não estamos salvando a foto no Storage por enquanto)
+        cv: cvUrl,
+        photo: formData.photo
       };
       console.log('Submitting candidate data to Firestore:', candidateData);
       await addDoc(collection(db, 'candidates'), candidateData);

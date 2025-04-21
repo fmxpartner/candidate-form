@@ -1,6 +1,6 @@
 [
     {
-      "origin": ["https://fmxpartner.netlify.app"],
+      "origin": ["https://fmxpartner.netlify.app", "http://localhost:3000"],
       "method": ["GET", "POST", "PUT"],
       "maxAgeSeconds": 3600
     }
