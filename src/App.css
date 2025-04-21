@@ -104,13 +104,13 @@
 
 .form-row {
   display: flex;
-  gap: 40px; /* Aumentado para 40px */
+  gap: 40px;
   flex-wrap: wrap;
 }
 
 .form-row .form-group {
   flex: 1;
-  min-width: 300px; /* Aumentado para 300px */
+  min-width: 300px;
 }
 
 .form-group.full-width {
@@ -233,4 +233,110 @@ form textarea:focus {
   background: #95a5a6;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Job Description Page */
+.job-description-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8f1f5 100%);
+  padding: 50px 20px;
+  overflow-y: auto;
+}
+
+.job-description-box {
+  width: 90%;
+  max-width: 900px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 50px;
+  text-align: left;
+  margin-bottom: 50px;
+  border: 1px solid #e0e6f0;
+}
+
+.job-description-title {
+  color: #1a3c5e;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  border-bottom: 2px solid #e0e6f0;
+  padding-bottom: 15px;
+}
+
+.job-section {
+  margin-bottom: 40px;
+}
+
+.job-section h2 {
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+  border-left: 4px solid #3498db;
+  padding-left: 15px;
+}
+
+.job-section p {
+  color: #5f6f81;
+  font-size: 16px;
+  line-height: 1.6;
+  font-family: 'Roboto', sans-serif;
+  margin: 10px 0;
+}
+
+.job-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.job-section ul li {
+  color: #5f6f81;
+  font-size: 16px;
+  line-height: 1.6;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 25px;
+}
+
+.job-section ul li:before {
+  content: '\f058'; /* Ícone de check-circle do Font Awesome */
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #3498db;
+  position: absolute;
+  left: 0;
+  top: 2px;
+}
+
+.apply-button-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.apply-button {
+  display: inline-block;
+  padding: 15px 40px;
+  background: #2c3e50;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.apply-button:hover {
+  background: #34495e;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
