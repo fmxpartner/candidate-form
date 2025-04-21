@@ -1,5 +1,5 @@
 // src/CandidateForm.js (projeto candidate-form)
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -7,12 +7,13 @@ import './App.css';
 
 // Configuração do Firebase (substitua pelos valores do seu projeto)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+    apiKey: "AIzaSyCcDdI1fLtQBZpQWwCRCJQZNmgwuu31vWw",
+    authDomain: "system-management-1ee11.firebaseapp.com",
+    projectId: "system-management-1ee11",
+    storageBucket: "system-management-1ee11.firebasestorage.app",
+    messagingSenderId: "768745399615",
+    appId: "1:768745399615:web:de9e37843a593867d49f8a",
+    measurementId: "G-DF9CM8C6BM"
 };
 
 // Inicializar o Firebase
@@ -60,6 +61,19 @@ function CandidateForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Adicionar useEffect para depurar renderizações
+  useEffect(() => {
+    console.log('formData changed:', formData);
+  }, [formData]);
+
+  useEffect(() => {
+    console.log('isSubmitting changed:', isSubmitting);
+  }, [isSubmitting]);
+
+  useEffect(() => {
+    console.log('successMessage changed:', successMessage);
+  }, [successMessage]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -76,6 +90,44 @@ function CandidateForm() {
     }
   };
 
+  const handleResetForm = () => {
+    setFormData({
+      photo: null,
+      fullName: '',
+      email: '',
+      birthDate: '',
+      contact: '',
+      cep: '',
+      street: '',
+      number: '',
+      complement: '',
+      neighborhood: '',
+      city: '',
+      familyStructure: '',
+      hobbies: '',
+      personalGoals: '',
+      education: '',
+      englishFluency: '',
+      spanishFluency: '',
+      coursesLastYear: '',
+      developmentAreas: '',
+      professionalGoals: '',
+      strengths: '',
+      lastSalary: '',
+      customerSupportExperience: '',
+      kycExperience: '',
+      cv: null,
+      professionalAchievement: '',
+      professionalGrowth: '',
+      motivations: '',
+      discProfile: '',
+      doubts: '',
+      weekendAvailability: '',
+      startAvailability: ''
+    });
+    setSuccessMessage('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.cv) {
@@ -85,13 +137,17 @@ function CandidateForm() {
 
     setIsSubmitting(true);
     try {
+      console.log('Starting CV upload...');
       // Fazer upload do CV para o Firebase Storage
       let cvUrl = null;
       if (formData.cv) {
         const cvFile = formData.cv;
         const cvRef = ref(storage, `candidates/cvs/${cvFile.name}_${Date.now()}`);
+        console.log('Uploading CV to:', cvRef.fullPath);
         await uploadBytes(cvRef, cvFile);
+        console.log('CV uploaded successfully, getting download URL...');
         cvUrl = await getDownloadURL(cvRef);
+        console.log('Download URL obtained:', cvUrl);
       }
 
       const candidateData = {
@@ -101,47 +157,17 @@ function CandidateForm() {
         cv: cvUrl, // Salvar a URL do arquivo no Firestore
         photo: formData.photo // A URL temporária (não estamos salvando a foto no Storage por enquanto)
       };
+      console.log('Submitting candidate data to Firestore:', candidateData);
       await addDoc(collection(db, 'candidates'), candidateData);
+      console.log('Candidate data submitted successfully');
       setSuccessMessage('Form submitted successfully! We will contact you soon.');
-      setFormData({
-        photo: null,
-        fullName: '',
-        email: '',
-        birthDate: '',
-        contact: '',
-        cep: '',
-        street: '',
-        number: '',
-        complement: '',
-        neighborhood: '',
-        city: '',
-        familyStructure: '',
-        hobbies: '',
-        personalGoals: '',
-        education: '',
-        englishFluency: '',
-        spanishFluency: '',
-        coursesLastYear: '',
-        developmentAreas: '',
-        professionalGoals: '',
-        strengths: '',
-        lastSalary: '',
-        customerSupportExperience: '',
-        kycExperience: '',
-        cv: null,
-        professionalAchievement: '',
-        professionalGrowth: '',
-        motivations: '',
-        discProfile: '',
-        doubts: '',
-        weekendAvailability: '',
-        startAvailability: ''
-      });
+      handleResetForm();
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Error submitting form. Please try again.');
     } finally {
       setIsSubmitting(false);
+      console.log('Submission process finished');
     }
   };
 
